@@ -1,0 +1,21 @@
+---
+title: "Shut the Box"
+author: "Martin"
+date: "May 9, 2016"
+output: html_document
+---
+
+
+
+```{r read_data}
+library(ggplot2)
+theme_set(theme_bw(base_size = 20))
+setwd("Projects/jordan")
+a <- read.csv("box_scores.csv")
+
+
+ggplot(a, aes(x=X0)) + geom_histogram(aes(y=..density..), color="black", fill="white") + xlab("Score") + ylab("Count") +
+    geom_vline(aes(xintercept=mean(X0)), color="red", linetype="dashed", size=1) +
+    annotate("Text", x = 60, y = 0.035, label = paste("Mean = ", round(mean(a$X0), 2)), size = 10)
+```
+
