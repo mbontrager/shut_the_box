@@ -2,20 +2,60 @@
 title: "Shut the Box"
 author: "Martin"
 date: "May 9, 2016"
-output: html_document
+output: 
+  html_document:
+    theme: journal
 ---
+<br>
+<br>
+<br>
+Given that the box has twelve numbers, and that we can roll only one die when all numbers over 6 are closed, what is the probability of shutting the box completely?
 
+I made a [python script](https://github.com/mbontrager/shut_the_box/blob/master/shut_the_box.py) that simulates playing a round of Shut the Box, and ran it 100,000 times to find the chance of closing the box (scoring 0). 
 
+### The answer is: Shutting the Box will happen about 0.3% of the time, or 1 in 333 rounds. 
+<br>
+<br>
+<br>
+Here is a histogram of 100,000 rounds of playing Shut the Box. The average score is around 36:
+<br>
 
-```{r read_data}
+```{r read_data, message=FALSE}
 library(ggplot2)
 theme_set(theme_bw(base_size = 20))
-setwd("Projects/jordan")
-a <- read.csv("box_scores.csv")
+#setwd("Projects/shut_the_box")
+a <- read.csv("box_scores.csv", header = FALSE)
 
+ggplot(a, aes(x=V1)) + geom_histogram(aes(y=..density..), color="black", fill="white") + xlab("Score") + ylab("Count") +
+    geom_vline(aes(xintercept=mean(V1)), color="red", linetype="dashed", size=1) +
+    annotate("Text", x = 60, y = 0.035, label = paste("Mean = ", round(mean(a$V1), 0)), size = 10)
 
-ggplot(a, aes(x=X0)) + geom_histogram(aes(y=..density..), color="black", fill="white") + xlab("Score") + ylab("Count") +
-    geom_vline(aes(xintercept=mean(X0)), color="red", linetype="dashed", size=1) +
-    annotate("Text", x = 60, y = 0.035, label = paste("Mean = ", round(mean(a$X0), 2)), size = 10)
+```
+
+<br><br>
+That's cool. It's also kind of interesting that there are scores which are more likely than others, which you can see here:
+
+```{r density}
+ggplot(a, aes(x=V1)) + geom_density(aes(x=a$V1), color="black") + xlab("Score") + ylab("Count") +
+    geom_vline(aes(xintercept=mean(V1)), color="red", linetype="dashed", size=1) +
+    annotate("Text", x = 60, y = 0.035, label = paste("Mean = ", round(mean(a$V1), 0)), size = 10)
+```
+<br><br>
+It looks like particular scores (12, 22, 34) are more likely than others. Which is kind of cool. Even though the average score was around 36, the most common score in Shut the Box is a 33. 
+
+In fact, here is a breakdown of the most common scores by percent that they showed up. I think one of the most interesting things is that shutting the box is not the least likely outcome. According to this, it's more rare that you'd end up with an end score of 1, for example. In fact, there are 21 scores that are less likely than a zero. Huh.
+
+```{r percent, message=FALSE}
+library(dplyr)
+library(knitr)
+library(data.table)
+library(scales)
+Percent <- sort(summary(as.factor(a$V1)), decreasing = TRUE)
+df <- as.data.frame(Percent, row.names = NULL)
+setDT(df, keep.rownames=TRUE)
+df$percent <- transmute(df, Percent = percent(Percent / sum(Percent)))
+df <- df[, .(rn, percent)]
+colnames(df) <- c("Score", "Percent")
+kable(df)
 ```
 

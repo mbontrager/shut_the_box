@@ -70,7 +70,7 @@ def shut_the_box():
             box_open = False
             return(sum(box))
                 
-for i in range(1, iters+1):
+for i in range(0, iters):
     score_list.append(shut_the_box())
 
 c = csv.writer(open("box_scores.csv", 'wb'))
