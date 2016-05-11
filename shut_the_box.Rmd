@@ -1,5 +1,5 @@
 ---
-title: "Shut the Box"
+title: "Shut the Box analysis"
 author: "Martin"
 date: "May 9, 2016"
 output: 
@@ -8,9 +8,11 @@ output:
 ---
 <br>
 <br>
-Given that the box has twelve numbers, and that we can roll only one die when all numbers over 6 are closed, what is the probability of shutting the box completely?
+I want to know how likely it is to win a game of "Shut the Box" by closing all numbers. In particular, I'm interested about what happens when the box goes all the way up to 12.
 
-I wrote a [python script](https://github.com/mbontrager/shut_the_box/blob/master/shut_the_box.py) that simulates playing a round of Shut the Box, and ran it 100,000 times to find the chance of closing the box (scoring 0). 
+Given that the box has twelve numbers, and that we can roll only one die when the sum of the numbers left in the box is less than 6, what is the probability of shutting the box completely?
+
+I wrote a [python script](https://github.com/mbontrager/shut_the_box/blob/master/shut_the_box.py) that simulates playing a round of Shut the Box, and ran it 1 million times to find the chance of closing the box (scoring 0). 
 
 ### Short answer: You can shut the box ~ 0.41% of the time, or about 1 in 250 tries 
 <br>
@@ -30,7 +32,7 @@ p <- ggplot(a, aes(x=V1)) + geom_histogram(color="black", fill="white", binwidth
 
 <br>
 
-Here is a histogram of 1 million simulated rounds of playing Shut the Box. The average score is around 36:
+Here is a histogram of 1 million simulated rounds of playing Shut the Box. The average score (the red dashed line) is around 36:
 <br>
 
 ```{r fig1, echo=FALSE}
@@ -39,7 +41,7 @@ print(p)
 <br>
 That's cool. It's also kind of interesting that there peaks where some scores are more likely than others.
 
-Even though the average score was around 36, the most common score in Shut the Box is a 33. 
+Even though the average score was around 36, the most common score in Shut the Box is a 33. At least in the way that I'm telling the computer to close numbers. 
 <br>
 ```{r percent, message=FALSE}
 library(dplyr); library(knitr); library(data.table); library(scales)
@@ -53,10 +55,10 @@ colnames(df) <- c("Score", "Percent")
 ```
 <br><br>
 
-The following table is a breakdown of the most common scores by percent that they showed up in 1 million simulations. I think one of the most interesting things is that shutting the box is not the least likely outcome. According to this, it's more rare that you'd end up with an end score of 9, for example. Some of that has to do with how the computer makes the decisions, but some of that is the fact that it's pretty common that you would roll a 5-9, and if not they can be used to close other numbers, so it's rare that you would end up with, say, a 9 being the only number left.
+The following table is a breakdown of the most common scores by percent that they showed up in 1 million simulations. I think one of the most interesting things is that shutting the box (scoring 0) is not the least likely outcome. According to the following table, it's more rare that you'd end up with an end score of 9, for example. Some of that has to do with how the computer makes the decisions. But it's also pretty common that you would roll a 5-9, and if not they can be used to close other numbers, so it's rare that you would end up with, say, a 9 being the only number left.
 
 
-So certain single digit scores might be less likely to end up with than closing the box, but as a whole you have a `r x` chance of ending on a single digit score compared to `r df[Score == "0",]$Percent` chance of shutting the box.
+So you might be less likely to end up with certain single digit scores than closing the box, but as a whole you have a `r x` chance of ending on a single digit score compared to `r df[Score == "0",]$Percent` chance of shutting the box.
 
 ```{r kable, echo=FALSE}
 kable(df)
