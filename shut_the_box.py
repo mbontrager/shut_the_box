@@ -18,12 +18,23 @@ import csv
 # Email: mbontrager@gmail.com
 ################################################################################
 
+#Dictionary of probabilities for rolling 1-12 on two die
 probs = {1: 0, 2: 1/36, 3: 2/36, 4: 3/36, 5: 4/36, 6: 5/36, 7: 6/36,
          8: 5/36, 9: 4/36, 10: 3/36, 11: 2/36, 12: 1/36}
-iters = 100000
-score_list = []
-                                                     
+rounds = 1000000 # Rounds of Shut the Box to simulate
+score_list = [] # List of scores from all rounds
+
+################################################################################
+
 def subset_sum(numbers, target, partial=[], subs = []):
+    """ Given a list of input integers and a target integer, return a list of 
+    all subsets of input ints that sum up to the target.
+
+    Keyword arguments:
+    numbers -- list of input integers
+    target -- target int to be summed to
+    partial and sub -- lists for recursion
+    """
     s = sum(partial)
     
     # check if the partial sum is equals to target
@@ -39,7 +50,8 @@ def subset_sum(numbers, target, partial=[], subs = []):
     return(subs)
         
 def roll(box):
-    if (x in range(7, 13) for x in box):
+    """Roll either 2 or 1 die, and return the sum of both (or one)."""
+    if sum(box) >= 6:
         die_1 = randint(1, 6)
         die_2 = randint(1, 6)
         die_sum = (die_1 + die_2)
@@ -49,14 +61,20 @@ def roll(box):
     
 
 def shut_the_box():
+    """Main Shut the Box function. Returns a Score from one round of play."""
     box = range(1, 13)
-    box_open = True
+    o = True
 
-    while box_open:
-        dsum =roll(box)
-#        print("\nYou rolled a %s" % dsum)
+    while o:
+        if len(box) == 0:
+            return(0)
+            o = False
+            break
+        
+        dsum = roll(box)
+        #print("\nYou rolled a %s" % dsum)
         sub = subset_sum(box, dsum, subs=[])
-
+        
         if len(sub) > 0:
             probRolls = list()
             for i in sub:
@@ -64,13 +82,20 @@ def shut_the_box():
                 for k in i:
                     product *= probs[k]
                 probRolls.append(product)
-#            print("You closed %s" % sub[probRolls.index(max(probRolls))])
-            box = [x for x in box if x not in sub[probRolls.index(max(probRolls))]]
+            #print("You closed %s" % sub[probRolls.index(max(probRolls))])
+            if max(probRolls) > 0:
+                idx = probRolls.index(max(probRolls))
+            else:
+                idx = sub.index(max(sub))
+            box = [x for x in box if x not in sub[idx]]
         else:
-            box_open = False
             return(sum(box))
+            o = False
+            break
+
+################################################################################
                 
-for i in range(0, iters):
+for i in range(0, rounds):
     score_list.append(shut_the_box())
 
 c = csv.writer(open("box_scores.csv", 'wb'))
