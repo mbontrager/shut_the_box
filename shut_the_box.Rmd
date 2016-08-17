@@ -8,13 +8,19 @@ output:
 ---
 <br>
 <br>
-I want to know how likely it is to win a game of "Shut the Box" by closing all numbers. In particular, I'm interested about what happens when the box goes all the way up to 12.
+[Shut the Box](https://en.wikipedia.org/wiki/Shut_the_Box) is a dice game of chance where the player tries to eliminate all numbered tiles by rolling two die and flipping over tiles which add up to the sum of the two die. To "Shut the Box", all tiles must be flipped over. The player is unable to shut the box if the sum of two die add to a number which cannot be reached by any open tiles in the box. 
 
-Given that the box has twelve numbers, and that we can roll only one die when the sum of the numbers left in the box is less than 6, what is the probability of shutting the box completely?
+I want to know how likely it is to win a game of Shut the Box" by closing all numbers. In particular, I'm interested about what happens when the box goes all the way up to 12.
 
-I wrote a [python script](https://github.com/mbontrager/shut_the_box/blob/master/shut_the_box.py) that simulates playing a round of Shut the Box, and ran it 1 million times to find the chance of closing the box (scoring 0). 
+Given that the box has 12 numbers, and that we are able to roll only one die when the sum of the numbers left in the box is less than 6, what is the probability of shutting the box completely?
+
+I wrote a [python script](https://github.com/mbontrager/shut_the_box/blob/master/shut_the_box.py) that simulates playing a round of Shut the Box, and ran it 1 million times to find the chance of closing the box (scoring 0).
 
 ### Short answer: You can shut the box ~ 0.41% of the time, or about 1 in 250 tries 
+
+It may be possible to improve on the strategy I use, and if anyone wants to do so I'd love to hear about it!
+
+
 <br>
 
 ```{r read_data, message=FALSE}
